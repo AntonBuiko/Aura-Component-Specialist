@@ -1,0 +1,40 @@
+<aura:component description="BoatDetails"
+                implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="selTabId" type="Id"/>
+    <aura:attribute name="boat" type="Boat__c"/>
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="id" type="Id" default="" access="public"/>
+    <aura:attribute name="enableFullDetails" type="Boolean" default="false" access="public"/>
+    <aura:handler name="boatReviewAdded" event="c:BoatReviewAdded" action="{!c.onBoatReviewAdded}"/>
+    <aura:handler event="c:BoatSelected" action="{!c.onBoatSelected}"/>
+    <force:recordData aura:id="service"
+                      recordId="{!v.id}"
+                      mode="VIEW"
+                      fields=  "Id,
+                                Name,
+                                Description__c,
+                                Price__c, Length__c,
+                                Contact__r.Name,
+                                Contact__r.Email,
+                                Contact__r.HomePhone,
+                                BoatType__r.Name,
+                                Picture__c"
+                      targetFields="{!v.boat}"
+                      targetError="{!v.recordError}"
+                      recordUpdated="{!c.onRecordUpdated}" />
+    <aura:if isTrue="{! !empty(v.boat)}">
+        <article class="slds-card">
+                <lightning:tabset aura:id="boatTabSet" selectedTabId="{!v.selTabId}">
+                    <lightning:tab label="Details" id="details">
+                        <c:BoatDetail boat="{!v.boat}"/>
+                    </lightning:tab>
+                    <lightning:tab label="Reviews" id="boatreviewtab">
+                        <c:BoatReviews boat="{!v.boat}" aura:id="BRcmp"/>
+                    </lightning:tab>
+                    <lightning:tab label="Add Review" id="addReview">
+                        <c:AddBoatReview boat="{!v.boat}"/> 
+                    </lightning:tab>
+                </lightning:tabset>
+        </article>
+    </aura:if>
+</aura:component>
